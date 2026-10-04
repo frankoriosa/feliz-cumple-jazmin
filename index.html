@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta property="og:title" content="Una carta para Jazmín">
+<meta property="og:description" content="Ábrela y sube el volumen.">
+<meta name="theme-color" content="#1a1029">
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style><title>Cumpleaños de Jazmín</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Mono:wght@400;500&family=Young+Serif&display=swap">
+<style>
+/* Layout: noche de fiesta a pantalla completa; un sobre lacrado al centro que se abre y se convierte en la carta con la torta. Un solo mundo visual (oscuro), a propósito. */
+:root {
+  color-scheme: dark;
+  --night: #1a1029;
+  --night-2: #3a2458;
+  --moon: #f3e6ff;
+  --paper: #fbefe8;
+  --paper-2: #f3e0d6;
+  --ink: #3a2342;
+  --ink-soft: #6d5470;
+  --rose: #e85d75;
+  --wine: #8e1f3c;
+  --gold: #ffb547;
+  --gold-hot: #fff3c4;
+  --mint: #7fd1b9;
+  --lilac: #b79cff;
+  --env: #d9798a;
+  --env-flap: #e58d9c;
+  --env-in: #a94a5f;
+  --sponge: #f2a7b5;
+  --sponge-2: #e98da0;
+  --icing: #fff7f2;
+  --plate: #e9cfa0;
+  --chip: rgba(251, 239, 232, .12);
+  --chip-line: rgba(251, 239, 232, .28);
+
+  --f-display: "Young Serif", Georgia, "Times New Roman", serif;
+  --f-hand: "Caveat", "Segoe Print", "Comic Sans MS", cursive;
+  --f-mono: "DM Mono", ui-monospace, Consolas, monospace;
+}
+html, body { height: 100%; }
+body {
+  background: radial-gradient(ellipse 120% 80% at 50% 25%, var(--night-2), var(--night) 70%);
+  background-color: var(--night);
+  color: var(--moon);
+  font-family: var(--f-hand);
+  overflow: hidden;
+}
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#bg { z-index: 0; }
+#fx { z-index: 20; }
+
+.scene {
+  position: relative; z-index: 1;
+  height: 100%;
+  overflow-y: auto;
+  padding-inline: 16px;
+  display: grid;
+  place-items: center;
+}
+
+/* ---------- Sobre ---------- */
+.envelope-wrap { display: grid; justify-items: center; gap: 28px; padding-block: 32px; width: 100%; }
+.to-line { font-family: var(--f-hand); font-size: clamp(1.8rem, 6vw, 2.4rem); color: var(--moon); text-align: center; line-height: 1.1; }
+.to-line small { display: block; font-family: var(--f-mono); font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; opacity: .65; margin-bottom: 6px; }
+
+.envelope {
+  position: relative;
+  width: min(100%, 440px);
+  aspect-ratio: 1.5;
+  border: 0; padding: 0; background: none;
+  cursor: pointer;
+  perspective: 1400px;
+  animation: bob 3.2s ease-in-out infinite;
+}
+.envelope:focus-visible { outline: 3px solid var(--gold); outline-offset: 10px; border-radius: 8px; }
+@keyframes bob { 50% { transform: translateY(-8px) rotate(-.6deg); } }
+.env-back { position: absolute; inset: 0; background: var(--env-in); border-radius: 8px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.6); }
+.env-letter {
+  position: absolute; left: 7%; right: 7%; top: 7%; bottom: 7%;
+  z-index: 1;
+  background: var(--paper);
+  border-radius: 4px;
+  display: grid; place-items: start center;
+  padding-top: 9%;
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: clamp(1rem, 4vw, 1.35rem);
+  transition: transform 1s .55s cubic-bezier(.2,.9,.25,1);
+}
+.env-pocket-wrap { position: absolute; inset: 0; z-index: 2; filter: drop-shadow(0 -3px 4px rgba(60,10,30,.25)); }
+.env-pocket {
+  position: absolute; inset: 0; border-radius: 8px;
+  background: linear-gradient(180deg, var(--env-flap), var(--env));
+  clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%);
+}
+.env-flap {
+  position: absolute; left: 0; right: 0; top: 0; height: 60%;
+  z-index: 3;
+  transform-origin: 50% 0;
+  transition: transform .65s cubic-bezier(.5,0,.3,1), z-index 0s .32s;
+  filter: drop-shadow(0 4px 4px rgba(60,10,30,.3));
+}
+.env-flap::before {
+  content: ""; position: absolute; inset: 0; border-radius: 8px 8px 0 0;
+  background: linear-gradient(180deg, var(--env-flap), var(--env));
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.seal {
+  position: absolute; left: 50%; top: 60%; z-index: 4;
+  width: 72px; height: 72px; margin: -36px 0 0 -36px;
+  border-radius: 47% 53% 50% 48% / 52% 46% 54% 48%;
+  background: radial-gradient(circle at 38% 32%, var(--rose), var(--wine) 62%);
+  box-shadow: inset 0 0 0 6px rgba(0,0,0,.12), inset 0 0 0 8px rgba(255,255,255,.08), 0 6px 12px rgba(40,0,15,.45);
+  display: grid; place-items: center;
+  color: var(--gold);
+  font-family: var(--f-display);
+  font-size: 1.9rem;
+  transition: transform .4s ease, opacity .4s ease;
+}
+.seal svg { width: 34px; height: 34px; }
+.envelope:hover .seal { transform: scale(1.06) rotate(-4deg); }
+
+.opening .envelope { animation: none; }
+.opening .seal { transform: scale(1.5) rotate(20deg); opacity: 0; }
+.opening .env-flap { transform: rotateX(180deg); z-index: 0; }
+.opening .env-letter { transform: translateY(-62%); }
+.opening .envelope-wrap { animation: sink .6s 1.35s ease-in forwards; }
+@keyframes sink { to { opacity: 0; transform: translateY(30px) scale(.95); } }
+
+.hint {
+  font-family: var(--f-mono);
+  font-size: .74rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--moon);
+  opacity: .7;
+  text-align: center;
+}
+
+/* ---------- Carta ---------- */
+.card-scene { place-items: start center; padding-block: 28px 96px; }
+.card {
+  position: relative;
+  width: min(100%, 470px);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 31px, rgba(109,84,112,.07) 31px 32px),
+    linear-gradient(170deg, var(--paper), var(--paper-2));
+  color: var(--ink);
+  border-radius: 6px;
+  padding: 28px clamp(20px, 6vw, 40px) 32px;
+  box-shadow: 0 40px 80px -30px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.4) inset;
+  display: grid; gap: 18px;
+  opacity: 0;
+  transform: translateY(40px) scale(.96);
+  transition: opacity .7s ease, transform .9s cubic-bezier(.2,.9,.25,1);
+}
+.card-scene.visible .card { opacity: 1; transform: none; }
+
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.postmark { width: 112px; height: auto; color: var(--wine); opacity: .62; transform: rotate(-14deg); margin: -6px 0 0 -8px; flex: none; }
+.postmark text { font-family: var(--f-mono); fill: currentColor; }
+.stamp {
+  flex: none;
+  width: 82px; padding: 6px;
+  background: radial-gradient(circle, transparent 3px, var(--icing) 3.5px) -5px -5px / 10px 10px;
+  transform: rotate(4deg);
+  filter: drop-shadow(0 2px 3px rgba(58,35,66,.25));
+}
+.stamp-inner {
+  background: linear-gradient(160deg, var(--rose), var(--wine));
+  color: var(--paper);
+  aspect-ratio: 4 / 5;
+  display: grid; place-content: center; text-align: center;
+  gap: 2px;
+}
+.stamp-big { font-family: var(--f-display); font-size: 2rem; line-height: 1; }
+.stamp-small { font-family: var(--f-mono); font-size: .58rem; letter-spacing: .18em; text-transform: uppercase; }
+
+.eyebrow { font-family: var(--f-mono); font-size: .76rem; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-soft); }
+.eyebrow strong { font-family: var(--f-hand); font-size: 1.7rem; letter-spacing: 0; text-transform: none; color: var(--wine); font-weight: 700; margin-left: 6px; }
+h1 {
+  margin: -6px 0 0;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 11vw, 3.7rem);
+  line-height: .98;
+  text-wrap: balance;
+  color: var(--ink);
+}
+h1 span { color: var(--rose); }
+.message { display: grid; gap: 10px; font-size: 1.5rem; line-height: 1.3; max-width: 34ch; }
+.message p { margin: 0; }
+.firma { margin: 0; font-size: 1.45rem; line-height: 1.2; color: var(--ink-soft); }
+.firma strong { color: var(--wine); font-size: 1.9rem; }
+
+.card-scene.visible .reveal { animation: rise .8s both cubic-bezier(.2,.9,.25,1); animation-delay: calc(.35s + var(--i, 0) * .14s); }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+
+/* ---------- Torta ---------- */
+.cake-zone { display: grid; justify-items: center; gap: 10px; margin-top: 8px; }
+.cake { position: relative; width: min(100%, 300px); height: 236px; }
+.plate { position: absolute; left: 0; right: 0; bottom: 0; height: 16px; border-radius: 50%; background: linear-gradient(180deg, var(--plate), #c9a771); box-shadow: 0 8px 14px -6px rgba(58,35,66,.4); }
+.tier { position: absolute; border-radius: 10px 10px 6px 6px; overflow: hidden;
+  background:
+    radial-gradient(circle, var(--mint) 1.6px, transparent 2px) 7px 30px / 26px 22px,
+    radial-gradient(circle, var(--gold) 1.6px, transparent 2px) 19px 40px / 30px 20px,
+    linear-gradient(180deg, var(--sponge), var(--sponge-2));
+}
+.tier::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 14px; background: var(--icing); }
+.tier::after { content: ""; position: absolute; left: 0; right: 0; top: 12px; height: 12px; background: radial-gradient(circle at 50% 0, var(--icing) 7px, transparent 7.5px) 0 0 / 18px 12px repeat-x; }
+.tier.bottom { left: 6%; right: 6%; bottom: 9px; height: 74px; }
+.tier.top { left: 20%; right: 20%; bottom: 80px; height: 58px; }
+.candles { position: absolute; left: 22%; right: 22%; bottom: 136px; display: flex; justify-content: space-evenly; align-items: flex-end; }
+.candle {
+  position: relative;
+  width: 13px; height: 46px; padding: 0; border: 0;
+  border-radius: 3px 3px 1px 1px;
+  background: repeating-linear-gradient(135deg, var(--c, var(--rose)) 0 5px, var(--icing) 5px 10px);
+  cursor: pointer;
+}
+.candle::before { content: ""; position: absolute; inset: -30px -10px -6px; }
+.candle::after { content: ""; position: absolute; left: 50%; bottom: 100%; width: 2px; height: 7px; margin-left: -1px; background: var(--ink); border-radius: 1px; }
+.candle:focus-visible { outline: 2px solid var(--wine); outline-offset: 4px; }
+.flame {
+  position: absolute; left: 50%; bottom: calc(100% + 4px);
+  width: 14px; height: 24px; margin-left: -7px;
+  border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+  background: radial-gradient(ellipse at 50% 72%, var(--gold-hot) 0 22%, var(--gold) 46%, rgba(255,140,50,0) 72%);
+  transform-origin: 50% 90%;
+  animation: flicker 1.1s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 8px var(--gold));
+  transition: transform .25s ease, opacity .25s ease;
+  pointer-events: none;
+}
+.candle:nth-child(2n) .flame { animation-duration: .9s; animation-delay: -.3s; }
+.candle:nth-child(3n) .flame { animation-duration: 1.3s; animation-delay: -.6s; }
+@keyframes flicker {
+  0% { transform: scale(1, 1) rotate(-2deg); }
+  40% { transform: scale(.92, 1.08) rotate(2deg); }
+  100% { transform: scale(1.05, .95) rotate(-1deg); }
+}
+.candles.numeric { justify-content: center; gap: 6px; }
+.candle.num {
+  width: auto; height: auto;
+  background: none; border-radius: 0;
+  display: grid; place-items: end center;
+}
+.candle.num::before { inset: -30px -6px -4px; }
+.candle.num::after { bottom: calc(100% - 6px); }
+.candle.num .flame { bottom: calc(100% - 2px); }
+.candle.num .smoke { bottom: calc(100% + 2px); }
+.digit {
+  display: block;
+  font-family: var(--f-display);
+  font-size: 72px;
+  line-height: .78;
+  padding-top: 4px;
+  background: repeating-linear-gradient(135deg, var(--c) 0 7px, var(--icing) 7px 13px);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--wine);
+  filter: drop-shadow(0 2px 0 rgba(142,31,60,.25));
+}
+.candle.out .flame { animation: none; transform: scale(0, .4); opacity: 0; }
+.smoke {
+  position: absolute; left: 50%; bottom: calc(100% + 6px);
+  width: 8px; height: 8px; margin-left: -4px; border-radius: 50%;
+  background: rgba(109,84,112,.45);
+  opacity: 0; pointer-events: none;
+}
+.candle.out .smoke { animation: smoke 1.4s ease-out forwards; }
+@keyframes smoke { 0% { opacity: .8; transform: translate(0,0) scale(.6); } 100% { opacity: 0; transform: translate(6px,-46px) scale(3.2); } }
+
+.cake-hint { margin: 0; font-family: var(--f-mono); font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); text-align: center; font-variant-numeric: tabular-nums; }
+
+.wish {
+  display: grid; justify-items: center; gap: 8px; text-align: center;
+  padding: 18px 16px 6px;
+  border-top: 1.5px dashed rgba(109,84,112,.35);
+  animation: rise .7s both cubic-bezier(.2,.9,.25,1);
+}
+.wish h2 { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: 2rem; color: var(--wine); }
+.wish p { margin: 0; font-size: 1.45rem; line-height: 1.25; }
+.btn-ghost {
+  margin-top: 6px;
+  font-family: var(--f-mono); font-size: .74rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--wine); background: transparent;
+  border: 1.5px solid currentColor; border-radius: 999px;
+  padding: 10px 16px; cursor: pointer;
+}
+.btn-ghost:hover { background: rgba(142,31,60,.08); }
+.btn-ghost:focus-visible { outline: 2px solid var(--wine); outline-offset: 3px; }
+
+/* ---------- Botón de música ---------- */
+.music-btn {
+  position: fixed; z-index: 30;
+  right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex; align-items: center; gap: 10px;
+  height: 48px; padding: 0 18px 0 14px;
+  border-radius: 999px;
+  background: var(--chip);
+  border: 1px solid var(--chip-line);
+  color: var(--moon);
+  font-family: var(--f-mono); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+.music-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.eq { display: flex; align-items: flex-end; gap: 3px; height: 16px; }
+.eq i { display: block; width: 3px; height: 4px; background: var(--gold); border-radius: 2px; }
+.music-btn.playing .eq i { animation: eq .9s ease-in-out infinite; }
+.music-btn.playing .eq i:nth-child(2) { animation-delay: -.3s; }
+.music-btn.playing .eq i:nth-child(3) { animation-delay: -.6s; }
+@keyframes eq { 0%, 100% { height: 4px; } 50% { height: 16px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .envelope, .flame, .music-btn.playing .eq i { animation: none !important; }
+  .env-letter, .env-flap, .card { transition-duration: .01s !important; transition-delay: 0s !important; }
+  .opening .envelope-wrap { animation-duration: .2s; animation-delay: .1s; }
+  .card-scene.visible .reveal { animation: none; }
+}
+</style>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<section class="scene" id="sobre">
+  <div class="envelope-wrap">
+    <p class="to-line"><small>Una carta para</small><span id="envName">ti</span></p>
+    <button class="envelope" id="abrir" type="button" aria-label="Abrir la carta">
+      <span class="env-back"></span>
+      <span class="env-letter">¡Feliz cumpleaños!</span>
+      <span class="env-pocket-wrap"><span class="env-pocket"></span></span>
+      <span class="env-flap"></span>
+      <span class="seal" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 27h20M8 27V18h16v9M11 18v-4M16 18v-5M21 18v-4"/>
+          <path d="M11 10.5c-1-1.2 0-2.5 0-3.5 1 .8 1.4 2.2 0 3.5zM16 9.5c-1-1.2 0-2.5 0-3.5 1 .8 1.4 2.2 0 3.5zM21 10.5c-1-1.2 0-2.5 0-3.5 1 .8 1.4 2.2 0 3.5z" fill="currentColor" stroke-width="1"/>
+        </svg>
+      </span>
+    </button>
+    <p class="hint">Toca el sello para abrirla · Sube el volumen</p>
+  </div>
+</section>
+
+<main class="scene card-scene" id="carta" hidden>
+  <article class="card">
+    <header class="card-top reveal" style="--i:0">
+      <svg class="postmark" viewBox="0 0 140 120" aria-hidden="true">
+        <defs><path id="pmArc" d="M60,60 m-43,0 a43,43 0 1,1 86,0 a43,43 0 1,1 -86,0"/></defs>
+        <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="60" cy="60" r="33" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <text font-size="9" letter-spacing="2.4"><textPath href="#pmArc">CORREO DE CUMPLEAÑOS · ★ · CORREO DE</textPath></text>
+        <text x="60" y="58" text-anchor="middle" font-size="16" id="pmDay">04</text>
+        <text x="60" y="74" text-anchor="middle" font-size="9.5" letter-spacing="1" id="pmMonth">OCT 2026</text>
+        <path d="M100 42c8-5 14 5 22 0s14 5 18 2M100 56c8-5 14 5 22 0s14 5 18 2M100 70c8-5 14 5 22 0s14 5 18 2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      </svg>
+      <div class="stamp" aria-hidden="true">
+        <div class="stamp-inner">
+          <span class="stamp-big" id="stampBig">HOY</span>
+          <span class="stamp-small" id="stampSmall">es tu día</span>
+        </div>
+      </div>
+    </header>
+
+    <p class="eyebrow reveal" style="--i:1">Para<strong id="cardName">ti</strong></p>
+    <h1 class="reveal" style="--i:2">¡Feliz <span>cumpleaños!</span></h1>
+    <div class="message" id="mensaje"></div>
+    <p class="firma reveal" id="firmaWrap">Con cariño<span id="firmaComa"></span><br><strong id="firma"></strong></p>
+
+    <div class="cake-zone reveal" id="cakeZone">
+      <div class="cake" id="cake">
+        <div class="candles" id="candles"></div>
+        <div class="tier top"></div>
+        <div class="tier bottom"></div>
+        <div class="plate"></div>
+      </div>
+      <p class="cake-hint" id="cakeHint" aria-live="polite">Sopla las velas: toca cada una</p>
+    </div>
+
+    <div class="wish" id="wish" hidden>
+      <h2>Pide un deseo</h2>
+      <p>Ya va en camino. Que este año te devuelva todo lo bueno que das.</p>
+      <button class="btn-ghost" id="relight" type="button">Encender las velas otra vez</button>
+    </div>
+  </article>
+</main>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<button class="music-btn" id="musica" type="button" hidden aria-pressed="true">
+  <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+  <span id="musicaLabel">Pausar música</span>
+</button>
+
+<script>
+/* ============================================================
+   PERSONALIZA AQUÍ
+   ============================================================ */
+const CARTA = {
+  nombre: "Jazmín", // vacío = "ti"
+  de: "",       // quien firma, ej: "Franko"
+  edad: 28,     // aparece en el sello postal; 0 = muestra "HOY"
+  velasNumero: true, // true = velas con forma de los números de la edad
+  velas: 5,     // si velasNumero es false: velas normales (1 a 9)
+  mensaje: [
+    "28 años y cada vez brillas más. Que este nuevo año te traiga días tranquilos, risas de esas que duelen y gente que te quiera bonito.",
+    "Gracias por ser como eres. El mundo es un poquito mejor desde el día en que llegaste.",
+    "Disfruta tu día, te lo mereces todo."
+  ]
+};
+/* ============================================================ */
+
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const $ = (id) => document.getElementById(id);
+
+/* ---------- Contenido ---------- */
+(function fill() {
+  const name = CARTA.nombre.trim() || "ti";
+  $("envName").textContent = name;
+  $("cardName").textContent = name;
+  if (CARTA.nombre.trim()) document.title = "Cumpleaños de " + CARTA.nombre.trim();
+
+  if (CARTA.edad > 0) {
+    $("stampBig").textContent = CARTA.edad;
+    $("stampSmall").textContent = "años";
+  }
+  const now = new Date();
+  const months = ["ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC"];
+  $("pmDay").textContent = String(now.getDate()).padStart(2, "0");
+  $("pmMonth").textContent = months[now.getMonth()] + " " + now.getFullYear();
+
+  const msg = $("mensaje");
+  CARTA.mensaje.forEach((line, i) => {
+    const p = document.createElement("p");
+    p.className = "reveal";
+    p.style.setProperty("--i", 3 + i);
+    p.textContent = line;
+    msg.appendChild(p);
+  });
+  const nextI = 3 + CARTA.mensaje.length;
+  $("firmaWrap").style.setProperty("--i", nextI);
+  $("cakeZone").style.setProperty("--i", nextI + 1);
+  if (CARTA.de.trim()) {
+    $("firmaComa").textContent = ",";
+    $("firma").textContent = CARTA.de.trim();
+  }
+})();
+
+/* ---------- Música: Feliz Cumpleaños en caja musical (Web Audio) ---------- */
+const Music = (() => {
+  let ctx, master, reverbIn, sfxBus, bus = null, timer = null, passStart = 0, pass = 0;
+  const BPM = 104, LOOP_BEATS = 29;
+  const mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
+
+  // [pulso, nota MIDI, duración en pulsos]
+  const MELODY = [
+    [0,67,.75],[.75,67,.25],
+    [1,69,1],[2,67,1],[3,72,1],
+    [4,71,2],[6,67,.75],[6.75,67,.25],
+    [7,69,1],[8,67,1],[9,74,1],
+    [10,72,2],[12,67,.75],[12.75,67,.25],
+    [13,79,1],[14,76,1],[15,72,1],
+    [16,71,1],[17,69,2],[19,77,.75],[19.75,77,.25],
+    [20,76,1],[21,72,1],[22,74,1],
+    [23,72,3]
+  ];
+  const C = [55,60,64], G7 = [53,59,62], C7 = [55,58,64], F = [53,57,60];
+  const BARS = [
+    { beat: 1,  len: 3, bass: 48, chord: C,  pahs: [C, C] },
+    { beat: 4,  len: 3, bass: 43, chord: G7, pahs: [G7, G7] },
+    { beat: 7,  len: 3, bass: 43, chord: G7, pahs: [G7, G7] },
+    { beat: 10, len: 3, bass: 48, chord: C,  pahs: [C, C] },
+    { beat: 13, len: 3, bass: 48, chord: C7, pahs: [C7, C7] },
+    { beat: 16, len: 4, bass: 41, chord: F,  pahs: [F, F] },
+    { beat: 20, len: 2, bass: 43, chord: C,  pahs: [C] },
+    { beat: 22, len: 1, bass: 43, chord: G7, pahs: [] },
+    { beat: 23, len: 3, bass: 36, chord: C,  pahs: [] }
+  ];
+
+  function impulse(seconds, decay) {
+    const rate = ctx.sampleRate, len = Math.floor(rate * seconds);
+    const buf = ctx.createBuffer(2, len, rate);
+    for (let ch = 0; ch < 2; ch++) {
+      const d = buf.getChannelData(ch);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+    }
+    return buf;
+  }
+
+  function init() {
+    if (ctx) return true;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    ctx = new AC();
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -16; comp.ratio.value = 3;
+    master = ctx.createGain(); master.gain.value = .8;
+    master.connect(comp).connect(ctx.destination);
+    const reverb = ctx.createConvolver(); reverb.buffer = impulse(2.6, 2.4);
+    const wet = ctx.createGain(); wet.gain.value = .32;
+    reverbIn = ctx.createGain();
+    reverbIn.connect(reverb).connect(wet).connect(master);
+    sfxBus = makeBus(1);
+    return true;
+  }
+  function makeBus(level) {
+    const g = ctx.createGain(); g.gain.value = level;
+    g.connect(master); g.connect(reverbIn);
+    return g;
+  }
+
+  function bell(dest, midi, t, { vel = .3, decay = 1.8, bright = 1 } = {}) {
+    const f = mtof(midi);
+    const out = ctx.createGain(); out.gain.value = vel; out.connect(dest);
+    [[1,1],[2,.4*bright],[3,.15*bright],[4.16,.07*bright],[5.43,.035*bright]].forEach(([ratio, amp], i) => {
+      const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = f * ratio;
+      const g = ctx.createGain(); const d = decay / (1 + i * .9);
+      g.gain.setValueAtTime(.0001, t);
+      g.gain.exponentialRampToValueAtTime(amp, t + .004);
+      g.gain.exponentialRampToValueAtTime(.0001, t + d);
+      o.connect(g).connect(out); o.start(t); o.stop(t + d + .05);
+    });
+  }
+  function lead(dest, midi, t, dur) {
+    const o = ctx.createOscillator(); o.type = "triangle"; o.frequency.value = mtof(midi);
+    const lfo = ctx.createOscillator(); lfo.frequency.value = 5.2;
+    const lfoAmt = ctx.createGain(); lfoAmt.gain.setValueAtTime(0, t); lfoAmt.gain.linearRampToValueAtTime(5, t + Math.min(.35, dur));
+    lfo.connect(lfoAmt).connect(o.detune);
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2400;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(.07, t + .03);
+    g.gain.setValueAtTime(.07, t + Math.max(.04, dur - .06));
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur + .18);
+    o.connect(lp).connect(g).connect(dest);
+    o.start(t); lfo.start(t); o.stop(t + dur + .2); lfo.stop(t + dur + .2);
+  }
+  function pad(dest, midis, t, dur) {
+    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 850;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(.022, t + .3);
+    g.gain.setValueAtTime(.022, t + Math.max(.31, dur - .1));
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur + .6);
+    lp.connect(g).connect(dest);
+    midis.forEach((m) => [-7, 7].forEach((cents) => {
+      const o = ctx.createOscillator(); o.type = "triangle";
+      o.frequency.value = mtof(m); o.detune.value = cents;
+      o.connect(lp); o.start(t); o.stop(t + dur + .7);
+    }));
+  }
+  function bass(dest, midi, t, dur) {
+    const o = ctx.createOscillator(); o.type = "sine"; o.frequency.value = mtof(midi);
+    const o2 = ctx.createOscillator(); o2.type = "triangle"; o2.frequency.value = mtof(midi + 12);
+    const g = ctx.createGain(), g2 = ctx.createGain(); g2.gain.value = .25;
+    g.gain.setValueAtTime(.0001, t);
+    g.gain.exponentialRampToValueAtTime(.2, t + .01);
+    g.gain.exponentialRampToValueAtTime(.0001, t + Math.max(.5, dur));
+    o.connect(g); o2.connect(g2).connect(g); g.connect(dest);
+    o.start(t); o2.start(t); o.stop(t + dur + .1); o2.stop(t + dur + .1);
+  }
+
+  function schedulePass(t0, high) {
+    const b = 60 / BPM;
+    MELODY.forEach(([beat, m, d]) => {
+      const t = t0 + beat * b;
+      bell(bus, high ? m + 12 : m, t, { vel: high ? .2 : .3, decay: 2.1 });
+      lead(bus, m, t, d * b * .92);
+    });
+    BARS.forEach((bar) => {
+      const t = t0 + bar.beat * b;
+      bass(bus, bar.bass, t, b * .9);
+      pad(bus, bar.chord, t, bar.len * b);
+      bar.pahs.forEach((ch, i) => ch.forEach((m) => bell(bus, m, t + (i + 1) * b, { vel: .07, decay: .7, bright: .4 })));
+    });
+    [72, 76, 79, 84].forEach((m, i) => bell(bus, m + 12, t0 + (24 + i * .25) * b, { vel: .08, decay: 2.2 }));
+  }
+  function tick() {
+    const len = LOOP_BEATS * 60 / BPM;
+    if (ctx.currentTime > passStart + len - 1.5) {
+      passStart += len; pass++;
+      schedulePass(passStart, pass % 2 === 1);
+    }
+  }
+
+  return {
+    get playing() { return !!bus; },
+    unlock() { if (init() && ctx.state === "suspended") ctx.resume(); return !!ctx; },
+    start() {
+      if (!this.unlock() || bus) return;
+      bus = makeBus(.0001);
+      bus.gain.exponentialRampToValueAtTime(.9, ctx.currentTime + .4);
+      passStart = ctx.currentTime + .25; pass = 0;
+      schedulePass(passStart, false);
+      timer = setInterval(tick, 250);
+    },
+    stop() {
+      if (!bus) return;
+      clearInterval(timer);
+      const old = bus; bus = null;
+      old.gain.cancelScheduledValues(ctx.currentTime);
+      old.gain.setValueAtTime(old.gain.value, ctx.currentTime);
+      old.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime + .25);
+      setTimeout(() => old.disconnect(), 400);
+    },
+    chime(i) {
+      if (!this.unlock()) return;
+      const t = ctx.currentTime;
+      const scale = [84, 86, 88, 91, 93, 96, 98, 100, 103];
+      bell(sfxBus, scale[i % scale.length], t, { vel: .22, decay: 1.6 });
+      // soplido
+      const len = Math.floor(ctx.sampleRate * .35);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+      for (let k = 0; k < len; k++) d[k] = (Math.random() * 2 - 1) * (1 - k / len);
+      const src = ctx.createBufferSource(); src.buffer = buf;
+      const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 1400; bp.Q.value = .7;
+      const g = ctx.createGain(); g.gain.value = .12;
+      src.connect(bp).connect(g).connect(master); src.start(t);
+    },
+    fanfare() {
+      if (!this.unlock()) return;
+      const t = ctx.currentTime + .05;
+      [60, 64, 67, 72, 76, 79, 84, 88, 91, 96].forEach((m, i) => bell(sfxBus, m, t + i * .07, { vel: .18, decay: 2.4 }));
+      pad(sfxBus, [48, 55, 60, 64, 67], t, 2.2);
+    }
+  };
+})();
+
+/* ---------- Brillos y confeti ---------- */
+const FX = (() => {
+  const bg = $("bg"), fx = $("fx");
+  const cb = bg.getContext("2d"), cf = fx.getContext("2d");
+  const COLORS = ["#ffb547", "#e85d75", "#7fd1b9", "#fbefe8", "#b79cff"];
+  let W = 0, H = 0;
+  const sparks = [], bits = [];
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+
+  function size() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    [bg, fx].forEach((cv) => { cv.width = W * dpr; cv.height = H * dpr; });
+    cb.setTransform(dpr, 0, 0, dpr, 0, 0); cf.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  addEventListener("resize", size); size();
+
+  function spark(anywhere) {
+    return { x: Math.random() * W, y: anywhere ? Math.random() * H : H + 10, r: .5 + Math.random() * 1.7,
+      v: .12 + Math.random() * .4, ph: Math.random() * 6.28, c: pick(COLORS) };
+  }
+  for (let i = 0; i < (reduceMotion ? 24 : 70); i++) sparks.push(spark(true));
+
+  function confetto(x, y, vx, vy) {
+    return { x, y, vx, vy, w: 6 + Math.random() * 6, h: 3 + Math.random() * 5, rot: Math.random() * 6.28,
+      vr: (Math.random() - .5) * .3, flip: Math.random() * 6.28, vf: .08 + Math.random() * .12,
+      c: pick(COLORS), round: Math.random() < .25 };
+  }
+  function burst(x, y, n = 140) {
+    n = reduceMotion ? Math.round(n / 4) : n;
+    for (let i = 0; i < n; i++) {
+      const a = -Math.PI / 2 + (Math.random() - .5) * 2.2, s = 4 + Math.random() * 9;
+      bits.push(confetto(x, y, Math.cos(a) * s, Math.sin(a) * s));
+    }
+  }
+  function rain(n = 170) {
+    n = reduceMotion ? Math.round(n / 4) : n;
+    for (let i = 0; i < n; i++) bits.push(confetto(Math.random() * W, -20 - Math.random() * H * .6, (Math.random() - .5) * 2, 1 + Math.random() * 2));
+  }
+
+  function frame(t) {
+    cb.clearRect(0, 0, W, H);
+    for (const s of sparks) {
+      if (!reduceMotion) { s.y -= s.v; s.x += Math.sin(t / 1700 + s.ph) * .2; }
+      if (s.y < -10) Object.assign(s, spark(false));
+      const a = .35 + .35 * Math.sin(t / 520 + s.ph);
+      cb.fillStyle = s.c;
+      cb.globalAlpha = a * .22; cb.beginPath(); cb.arc(s.x, s.y, s.r * 3.6, 0, 6.28); cb.fill();
+      cb.globalAlpha = a; cb.beginPath(); cb.arc(s.x, s.y, s.r, 0, 6.28); cb.fill();
+    }
+    cb.globalAlpha = 1;
+
+    cf.clearRect(0, 0, W, H);
+    for (let i = bits.length - 1; i >= 0; i--) {
+      const p = bits[i];
+      p.vy += .14; p.vx *= .985; p.vy *= .985;
+      p.x += p.vx + Math.sin(p.flip) * .6; p.y += p.vy;
+      p.rot += p.vr; p.flip += p.vf;
+      if (p.y > H + 30) { bits.splice(i, 1); continue; }
+      cf.save(); cf.translate(p.x, p.y); cf.rotate(p.rot); cf.scale(1, Math.cos(p.flip));
+      cf.fillStyle = p.c;
+      if (p.round) { cf.beginPath(); cf.arc(0, 0, p.h * .8, 0, 6.28); cf.fill(); }
+      else cf.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      cf.restore();
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  return { burst, rain };
+})();
+
+/* ---------- Velas ---------- */
+const candleBox = $("candles"), hint = $("cakeHint"), wish = $("wish");
+const digits = CARTA.velasNumero && CARTA.edad > 0 ? String(CARTA.edad).split("") : null;
+const nVelas = digits ? digits.length : Math.max(1, Math.min(9, CARTA.velas | 0));
+const candleColors = ["var(--rose)", "var(--mint)", "var(--gold)", "var(--lilac)"];
+if (digits) candleBox.classList.add("numeric");
+
+function buildCandles() {
+  candleBox.innerHTML = "";
+  for (let i = 0; i < nVelas; i++) {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = digits ? "candle num" : "candle";
+    b.style.setProperty("--c", candleColors[i % candleColors.length]);
+    b.setAttribute("aria-label", "Soplar la vela " + (digits ? "del " + digits[i] : i + 1));
+    b.innerHTML = (digits ? '<span class="digit">' + digits[i] + "</span>" : "") +
+      '<span class="flame"></span><span class="smoke"></span>';
+    b.addEventListener("click", () => blow(b, i));
+    candleBox.appendChild(b);
+  }
+  hint.textContent = "Sopla las velas: toca cada una";
+  wish.hidden = true;
+}
+function blow(b, i) {
+  if (b.classList.contains("out")) return;
+  b.classList.add("out");
+  b.setAttribute("aria-label", "Vela " + (i + 1) + " apagada");
+  Music.chime(i);
+  const left = candleBox.querySelectorAll(".candle:not(.out)").length;
+  if (left > 0) {
+    hint.textContent = (nVelas - left) + " de " + nVelas + " apagadas";
+    return;
+  }
+  hint.textContent = "¡Todas apagadas!";
+  setTimeout(() => {
+    Music.fanfare();
+    const r = $("cake").getBoundingClientRect();
+    FX.burst(r.left + r.width / 2, r.top + r.height * .35, 180);
+    wish.hidden = false;
+    wish.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "nearest" });
+  }, 450);
+}
+$("relight").addEventListener("click", buildCandles);
+buildCandles();
+
+/* ---------- Abrir el sobre ---------- */
+const sobre = $("sobre"), carta = $("carta"), musicBtn = $("musica");
+let opened = false;
+
+$("abrir").addEventListener("click", () => {
+  if (opened) return;
+  opened = true;
+  Music.start();
+  setMusicUI();
+  sobre.classList.add("opening");
+  setTimeout(() => {
+    sobre.hidden = true;
+    carta.hidden = false;
+    musicBtn.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => carta.classList.add("visible")));
+    FX.rain();
+  }, reduceMotion ? 300 : 1900);
+});
+
+function setMusicUI() {
+  const on = Music.playing;
+  musicBtn.classList.toggle("playing", on);
+  musicBtn.setAttribute("aria-pressed", String(on));
+  $("musicaLabel").textContent = on ? "Pausar música" : "Poner música";
+}
+musicBtn.addEventListener("click", () => {
+  Music.playing ? Music.stop() : Music.start();
+  setMusicUI();
+});
+</script>
+
+</html>
